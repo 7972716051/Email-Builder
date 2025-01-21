@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Builder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .builder-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .email-preview {
+            width: 50%;
+            border: 1px solid #ccc;
+            padding: 20px;
+        }
+        .email-builder {
+            width: 45%;
+        }
+        .email-builder input, .email-builder textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 14px;
+        }
+        .preview-container {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="builder-container">
+        <!-- Email Builder -->
+        <div class="email-builder">
+            <h3>Customize Your Email</h3>
+            <input type="text" id="subject" placeholder="Subject">
+            <textarea id="emailContent" placeholder="Enter email content here..." rows="10"></textarea>
+            <input type="color" id="textColor" value="#000000">
+            <input type="color" id="bgColor" value="#ffffff">
+            <div class="button-container">
+                <button onclick="previewEmail()">Preview Email</button>
+                <button onclick="sendEmail()">Send Email</button>
+            </div>
+        </div>
+
+        <!-- Email Preview -->
+        <div class="email-preview">
+            <h3>Email Preview</h3>
+            <div id="emailPreview" class="preview-container"></div>
+        </div>
+    </div>
+
+    <script>
+        function previewEmail() {
+            const subject = document.getElementById('subject').value;
+            const emailContent = document.getElementById('emailContent').value;
+            const textColor = document.getElementById('textColor').value;
+            const bgColor = document.getElementById('bgColor').value;
+
+            const previewContainer = document.getElementById('emailPreview');
+            previewContainer.innerHTML = `
+                <h2 style="color: ${textColor}">${subject}</h2>
+                <p style="color: ${textColor}; background-color: ${bgColor}; padding: 10px;">${emailContent}</p>
+            `;
+        }
+
+        function sendEmail() {
+            const subject = document.getElementById('subject').value;
+            const emailContent = document.getElementById('emailContent').value;
+            const textColor = document.getElementById('textColor').value;
+            const bgColor = document.getElementById('bgColor').value;
+
+            fetch('/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    subject: subject,
+                    emailContent: emailContent,
+                    textColor: textColor,
+                    bgColor: bgColor
+                })
+            }).then(response => response.json())
+              .then(data => alert(data.message));
+        }
+    </script>
+
+</body>
+</html>
